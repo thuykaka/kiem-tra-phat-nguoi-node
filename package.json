@@ -1,19 +1,21 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-kiem-tra-phat-nguoi",
   "version": "0.1.0",
   "description": "",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "kiem-tra-phat-nguoi",
+    "csgt.vn"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Thuykaka",
+    "email": "thuykaka.uit@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/thuykaka/kiem-tra-phat-nguoi-node"
   },
   "engines": {
     "node": ">=18.10",
@@ -41,7 +43,8 @@
     ],
     "nodes": [
       "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/HttpBin/HttpBin.node.js",
+      "dist/nodes/KiemTraPhatNguoiNode/KiemTraPhatNguoiNode.node.js"
     ]
   },
   "devDependencies": {
