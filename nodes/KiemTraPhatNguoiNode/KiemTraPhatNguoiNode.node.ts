@@ -5,6 +5,7 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
+import { checkFines } from './KiemTraPhatNguoiExecute';
 
 export class KiemTraPhatNguoiNode implements INodeType {
 	description: INodeTypeDescription = {
@@ -56,19 +57,33 @@ export class KiemTraPhatNguoiNode implements INodeType {
 		const items = this.getInputData();
 
 		let item: INodeExecutionData;
-		let myString: string;
+		let plate: string;
+		let vehicleType: string;
 
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
-				myString = this.getNodeParameter('myString', itemIndex, '') as string;
+				plate = this.getNodeParameter('plate', itemIndex, '') as string;
+				vehicleType = this.getNodeParameter('vehicleType', itemIndex, '') as string;
 				item = items[itemIndex];
 
-				item.json.myString = myString;
+				const response = await checkFines(plate, vehicleType);
+				item.json.error = response.error;
+				item.json.message = response.message;
+				item.json.data = response.data || [];
 			} catch (error) {
 				if (this.continueOnFail()) {
 					items.push({ json: this.getInputData(itemIndex)[0].json, error, pairedItem: itemIndex });
 				} else {
-					throw new NodeOperationError(this.getNode(), error as Error, { itemIndex });
+					// Adding `itemIndex` allows other workflows to handle this error
+					if (error.context) {
+						// If the error thrown already contains the context property,
+						// only append the itemIndex
+						error.context.itemIndex = itemIndex;
+						throw error;
+					}
+					throw new NodeOperationError(this.getNode(), error, {
+						itemIndex,
+					});
 				}
 			}
 		}
